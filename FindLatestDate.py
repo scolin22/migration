@@ -12,5 +12,4 @@ def FindLatestDate(FileToOpen):
         else:
             return 0
     except IOError:
-        #print 'NOT FOUND' + FileToOpen
         return 0

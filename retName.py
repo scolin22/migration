@@ -17,16 +17,8 @@ for CurrentRow in ContactReader:
     FileToOpen = '../highrise-export/contacts/' + CurrentRow[1] +'.txt'
     if int(FindLatestDate.FindLatestDate(FileToOpen)) >= 2010:
         ContactWriter.writerow(CurrentRow)
-    #    CurrentContacts.append(CurrentRow[1])
-    #else:
-    #    CurrentContacts.append('OUTDATED ' + CurrentRow[1])
-
-    #print FileToOpen
 
     count += 1
-
-#for Entry in CurrentContacts:
-#    outfile.write(Entry + '\n')
 
 csvfile.close()
 outfile.close()
