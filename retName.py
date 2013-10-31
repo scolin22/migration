@@ -12,21 +12,45 @@ ContactWriter = csv.writer(outfile, delimiter=',')
 ContactWriter.writerow(ContactReader.next())
 ContactReader.next()
 
+
+#Check against what's currently in Salesforce Records
+NOTRemoved = []
+
+LookupFile = open('Contact IDs.csv', 'rU')
+IDReader = csv.reader(LookupFile, delimiter=',')
+for CurrentRow in IDReader:
+    NOTRemoved.append(CurrentRow[1] + ' ' + CurrentRow[2])
+LookupFile.close()
+
+LookupFile = open('Account IDs.csv', 'rU')
+IDReader = csv.reader(LookupFile, delimiter=',')
+for CurrentRow in IDReader:
+    NOTRemoved.append(CurrentRow[2])
+LookupFile.close()
+
+#Check Salesforce Records against Email dates
 count = 0
+NOTcount = 0
 CurrentContacts = []
 for CurrentRow in ContactReader:
     #Find Client File
     victim = CurrentRow[1]
     victim = re.sub('[^0-9a-zA-Z ]+', '_', victim)
 
-    FileToOpen = '../highrise-export/contacts/' + victim +'.txt'
-    if int(FindLatestDate.FindLatestDate(FileToOpen)) >= 2010:
-        ContactWriter.writerow(CurrentRow)
+    if victim not in NOTRemoved:
+        print victim
+        NOTcount += 1
+        continue
 
-    count += 1
+    FileToOpen = '../highrise-export/contacts/' + victim +'.txt'
+    #print FileToOpen
+    if int(FindLatestDate.FindLatestDate(FileToOpen)) >= 2010:
+        count += 1
+        ContactWriter.writerow(CurrentRow)
 
 csvfile.close()
 outfile.close()
 
 print 'done'
 print count
+print NOTcount

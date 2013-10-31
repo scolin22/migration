@@ -31,12 +31,17 @@ def TakeEmailInfo(FileToOpen):
                 line = InputFile.next()
                 line = InputFile.next()
                 if line.startswith('    Author:'):
-                    Email['Assigned to ID'] = line[12:]
-                    Email['Assigned to ID'] = Email['Assigned to ID'].rstrip('\r\n')
-                    if Email['Assigned to ID'] == 'Glenn H.':
-                        Email['Assigned to ID'] = 'Glenn Hilton'
-                    else:
-                        Email['Assigned to ID'] = 'Jennifer Hols'
+                    #Email['Assigned to ID'] = line[12:]
+                    #Email['Assigned to ID'] = Email['Assigned to ID'].rstrip('\r\n')
+                    #if Email['Assigned to ID'] == 'Glenn H.':
+                    #    Email['Assigned to ID'] = 'Glenn Hilton'
+                    #    Email['Account ID'] = '005i0000001iROX'
+                    #else:
+                    #    Email['Assigned to ID'] = 'Jennifer Hols'
+                    #    Email['Account ID'] = '005i0000000KkkG'
+                    Email['Assigned to ID'] = 'Jennifer Hols'
+                    #Email['Account ID'] = '005i0000000KkkG'
+                    Email['Account ID'] = 'Jennifer Hols'
                     line = InputFile.next()
                     line = InputFile.next()
                 if line.startswith('    Written:'):
@@ -47,7 +52,7 @@ def TakeEmailInfo(FileToOpen):
                 if line.startswith('    About:'):
                     Email['Contact/Lead ID'] = line[11:]
                     Email['Contact/Lead ID'] = Email['Contact/Lead ID'].rstrip('\r\n')
-                    #Email['Contact/Lead ID'] = FindSalesforceClientID(Email['Contact/Lead ID'])
+                    #Email['Contact/Lead ID'] = FindSalesforceContactID(Email['Contact/Lead ID'])
                     line = InputFile.next()
                     line = InputFile.next()
                 if line.startswith('    Subject:'):
@@ -58,17 +63,18 @@ def TakeEmailInfo(FileToOpen):
                 Email['Priority'] = 'Normal'
                 Email['Status'] = 'Complete'
 
-                #target = FileToOpen.lstrip('../highrise-export/contacts/')
-                #target = target.rstrip('.txt')
-                if company == '0':
-                    target = FileToOpen.lstrip('../highrise-export/contacts/')
-                    target = target.rstrip('.txt')
-                    Email['Opportunity/Account ID'] = FindSalesforceAccountID(target)
-                else:
-                    Email['Opportunity/Account ID'] = FindSalesforceAccountID(company)
+                target = FileToOpen.lstrip('../highrise-export/contacts/')
+                target = target.rstrip('.txt')
+                Email['Opportunity/Account ID'] = target;
+                #if company == '0':
+                #    target = FileToOpen.lstrip('../highrise-export/contacts/')
+                #    #target = target.rstrip('.txt')
+                #    target = target[:-4]
+                #    Email['Opportunity/Account ID'] = FindSalesforceAccountID(target)
+                #else:
+                #    Email['Opportunity/Account ID'] = FindSalesforceAccountID(company)
 
-                Email['Account ID'] = 'Jennys ID'
-                Email['EmailID'] = id
+                #Email['EmailID'] = id
                 if line.startswith('    Body:'):
                     line = InputFile.next()
                     Email['Description'] = ''
@@ -96,12 +102,12 @@ def FindSalesforceAccountID(Name):
             break
     return SalesforceID
 
-def FindSalesforceClientID(Name):
+def FindSalesforceContactID(Name):
     SalesforceID = '0'
-    LookupFile = open('Client IDs.csv', 'rU')
+    LookupFile = open('Contact IDs.csv', 'rU')
     IDReader = csv.reader(LookupFile, delimiter=',')
     for CurrentRow in IDReader:
-        if CurrentRow[2] == Name:
+        if CurrentRow[1] + ' ' + CurrentRow[2] == Name:
             SalesforceID = CurrentRow[0]
             break
     return SalesforceID

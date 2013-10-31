@@ -5,8 +5,7 @@ import copy
 import re
 
 csvfile = open('CurrentContacts.csv', 'rU')
-outfile = open('Emails.csv', 'wb')
-ContactReader = csv.reader(csvfile, delimiter=',')
+ContactReader = csv.reader(csvfile, dialect='excel', delimiter=',')
 
 #Skip through first header row
 ContactReader.next()
@@ -14,6 +13,7 @@ ContactReader.next()
 #Write down the header information
 EmailIDs = []
 AllEmails = []
+IgnoredEmails = ['17029392', '16658864', '16995266', '21208201', '21204144', '33273510', '141965358', '24219923', '29854070', '13998396']
 for CurrentRow in ContactReader:
     #Find Client File
     victim = CurrentRow[1]
@@ -27,7 +27,7 @@ for CurrentRow in ContactReader:
 
     CopyFoundEmail = copy.deepcopy(FoundEmail)
     for key, value in FoundEmail.iteritems():
-        if key in EmailIDs:
+        if key in EmailIDs or key in IgnoredEmails:
             del CopyFoundEmail[key]
         else:
             EmailIDs.append(key)
@@ -36,8 +36,11 @@ for CurrentRow in ContactReader:
     AllEmails.append(FoundEmail)
 
 #Output List in a csv format
-fieldnames = ['Priority', 'Status', 'Subject', 'Due Date Only', 'Description', 'Assigned to ID', 'Opportunity/Account ID', 'Contact/Lead ID', 'Account ID', 'EmailID']
-ContactWriter = csv.DictWriter(outfile, delimiter=',', fieldnames=fieldnames, quoting=csv.QUOTE_ALL)
+outfile = open('Emails.csv', 'wb')
+fieldnames = ['Priority', 'Status', 'Subject', 'Due Date Only', 'Description', 'Assigned to ID', 'Opportunity/Account ID', 'Contact/Lead ID', 'Account ID'] #, 'EmailID']
+#ContactWriter = csv.DictWriter(outfile, delimiter=',', fieldnames=fieldnames, quoting=csv.QUOTE_ALL, dialect='excel')
+ContactWriter = csv.DictWriter(outfile, fieldnames=fieldnames, dialect='excel', extrasaction='ignore')
+
 ContactWriter.writerow(dict((fn,fn) for fn in fieldnames))
 for batchemail in AllEmails:
     for key, value in batchemail.iteritems():
